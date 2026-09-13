@@ -33,8 +33,10 @@ jobs:
       # workflow builds and tests what is committed, which is what consumers of the module get.
       - uses: actions/checkout@v5
 
+      # @v6 rather than @v5: v5 still targets Node.js 20, which the runners deprecated and now
+      # force onto Node.js 24 with a warning annotation on every run.
       - name: Set up Go ${{ matrix.go-version }}
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version: ${{ matrix.go-version }}
           cache-dependency-path: go.sum
