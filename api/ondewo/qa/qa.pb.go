@@ -21,7 +21,7 @@
 package qa
 
 import (
-	nlu "github.com/ondewo/ondewo-nlu-client-go/api/ondewo/nlu"
+	nlu "github.com/ondewo/ondewo-nlu-client-go/v7/api/ondewo/nlu"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"

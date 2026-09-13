@@ -25,7 +25,7 @@ import (
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/protobuf/types/known/emptypb"
 
-	"github.com/ondewo/ondewo-nlu-client-go/auth"
+	"github.com/ondewo/ondewo-nlu-client-go/v7/auth"
 )
 
 // TestBearerTokenReachesTheServerAsAnAuthorizationHeader is the end-to-end assertion about the

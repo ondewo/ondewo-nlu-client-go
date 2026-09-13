@@ -1,4 +1,4 @@
-module github.com/ondewo/ondewo-nlu-client-go
+module github.com/ondewo/ondewo-nlu-client-go/v7
 
 go 1.25.0
 

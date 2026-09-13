@@ -28,8 +28,8 @@ import (
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	nlu "github.com/ondewo/ondewo-nlu-client-go/api/ondewo/nlu"
-	qa "github.com/ondewo/ondewo-nlu-client-go/api/ondewo/qa"
+	nlu "github.com/ondewo/ondewo-nlu-client-go/v7/api/ondewo/nlu"
+	qa "github.com/ondewo/ondewo-nlu-client-go/v7/api/ondewo/qa"
 )
 
 // protoFileCount is the number of .proto files below ondewo-nlu-api/ondewo that the compiler
