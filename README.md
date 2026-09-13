@@ -76,36 +76,37 @@ import (
 
     "google.golang.org/grpc"
     "google.golang.org/grpc/credentials"
-    "google.golang.org/grpc/metadata"
 
     nlupb "github.com/ondewo/ondewo-nlu-client-go/api/ondewo/nlu"
+    "github.com/ondewo/ondewo-nlu-client-go/auth"
 )
 
 func main() {
+    // auth.WithBearerToken sends the Keycloak access token as `authorization: Bearer <token>` on
+    // every call of this connection, exactly as the other ONDEWO clients do. It refuses to attach
+    // itself to a plaintext connection, so it is paired with transport credentials here.
     conn, err := grpc.NewClient(
         "grpc-nlu.ondewo.com:443",
         grpc.WithTransportCredentials(credentials.NewTLS(&tls.Config{})),
+        auth.WithBearerToken(os.Getenv("ONDEWO_NLU_ACCESS_TOKEN")),
     )
     if err != nil {
         log.Fatalf("could not connect: %v", err)
     }
     defer conn.Close()
 
-    // Credentials travel as request metadata, exactly as in the other ONDEWO clients.
-    bearerToken := os.Getenv("ONDEWO_NLU_ACCESS_TOKEN")
     ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
     defer cancel()
-    ctx = metadata.AppendToOutgoingContext(ctx, "authorization", "Bearer "+bearerToken)
 
     // Every service of the API has a generated New<Service>Client constructor. Browse
-    // api/ondewo/nlu/ for the ones this product exposes.
-    client := nlupb.NewExampleServiceClient(conn)
+    // api/ondewo/nlu/ for the 17 services this product exposes.
+    client := nlupb.NewAgentsClient(conn)
 
-    response, err := client.ExampleMethod(ctx, &nlupb.ExampleRequest{})
+    response, err := client.ListAgents(ctx, &nlupb.ListAgentsRequest{})
     if err != nil {
         log.Fatalf("rpc failed: %v", err)
     }
-    log.Printf("response: %v", response)
+    log.Printf("agents: %v", response.GetAgentsWithOwners())
 }
 ```
 
@@ -118,6 +119,8 @@ func main() {
 │       └── nlu
 │           ├── *.pb.go                    <----- messages (protoc-gen-go)
 │           └── *_grpc.pb.go               <----- service stubs (protoc-gen-go-grpc)
+├── auth                                   <----- HAND WRITTEN - the `authorization: Bearer` credential
+├── tests                                  <----- HAND WRITTEN - the go test suite (see Testing below)
 ├── ondewo-nlu-api                             <----- submodule @ https://github.com/ondewo/ondewo-nlu-api
 ├── ondewo-proto-compiler                  <----- submodule @ https://github.com/ondewo/ondewo-proto-compiler
 ├── .github
@@ -162,6 +165,52 @@ A few properties of the generation worth knowing:
   generated stubs at the end of every run so a drift is visible.
 * Generation needs no network: every module the stubs are compiled against was pre-downloaded when
   the image was built.
+
+## Testing
+
+```shell
+make check_stubs            ## assert the generated stubs are committed
+make test                   ## go test over every package
+make test_coverage          ## the same suite under -race, plus the hand-written coverage gate
+make test_coverage_generated ## report (never gate) how much of api/ the suite exercises
+```
+
+The suite lives in `tests/` — never below `api/`, which is wiped on every regeneration — and needs
+neither a network nor a running ONDEWO server. gRPC connections are made over an in-memory
+`bufconn` listener, so a client stub, a server stub and a real HTTP/2 connection are exercised
+in-process.
+
+What it asserts about the **generated** code:
+
+* a message with a scalar, a `map` of a nested message type and two well-known `Timestamp`s
+  survives `proto.Marshal` → `proto.Unmarshal` unchanged, and a truncated payload is rejected;
+* a proto3 `optional` scalar keeps its explicit presence — an explicitly set `0` is transmitted and
+  arrives as a non-nil pointer, while an unset field stays `nil`. This is the distinction the
+  angular target of the same compiler once lost, which made `false`/`0`/`""` unsendable;
+* the enum zero value is the `*_UNSPECIFIED` member, with its generated name/value maps;
+* the `grpc.ServiceDesc` of every service (from `protoc-gen-go-grpc`) lists exactly the RPCs the
+  proto descriptor of that service (from `protoc-gen-go`) does — the two plugins run separately and
+  each half compiles on its own, so a disagreement is otherwise invisible;
+* every generated `New<Service>Client` binds to a connection, and every generated **unary** stub is
+  actually called over the wire and has to come back as `codes.Unimplemented` — 328 of them for
+  this product, which proves each one marshals its request and builds a method name the transport
+  accepts;
+* an RPC answered by a fake server round-trips its response, and one the server leaves to the
+  generated `Unimplemented*Server` base type reports `codes.Unimplemented`;
+* all 19 compiled `.proto` files are registered in the global descriptor registry as proto3.
+
+**Coverage.** The threshold (`COVERAGE_THRESHOLD` in the `Makefile`, currently **100%**) is
+enforced over the hand-written packages only — `auth/` — because everything below `api/` is machine
+output: gating on it would measure how much of protoc's output a test happens to walk. The stubs
+are still exercised for real, as listed above; `make test_coverage_generated` prints their figure
+(**16.4%** of generated statements at the time of writing) for the record. `make test_coverage` also
+fails if it ends up measuring no hand-written function at all, so a deleted package cannot turn the
+gate into a green no-op.
+
+`.github/workflows/ci.yml` runs exactly these targets on `ubuntu-latest` against the go directive of
+`go.mod` and the toolchain the compiler image generates with. It does **not** build the compiler
+image or check out the submodules: it builds and tests the committed stubs, which is what a
+consumer of the module gets.
 
 ## Release
 
