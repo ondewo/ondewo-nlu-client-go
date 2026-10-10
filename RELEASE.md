@@ -36,6 +36,7 @@
   every section, and non-empty notes for the current version.
 * README: new section "TLS, mutual TLS and certificates" (modes, connection defaults, a test PKI with
   openssl, TLS security notes, troubleshooting).
+
 *****************
 
 ## Release ONDEWO NLU Go Client 7.3.0
