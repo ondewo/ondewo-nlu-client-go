@@ -592,11 +592,14 @@ clone_devops_accounts: ## Clones devops-accounts repo
 	git clone git@bitbucket.org:ondewo/${DEVOPS_ACCOUNT_GIT}.git
 
 # Exactly the one variable this release needs, matched ANCHORED at the start of the line: the
-# devops files carry `#` comment lines that mention variable names, and a comment reaching the
-# command line below would comment out everything after it. `@`, so make never echoes the token.
+# devops files carry `#` comment lines that mention variable names. The token is loaded into the
+# environment of the sub-make and never passed as `make release NAME=<value>`: make's argv, like
+# every /proc/<pid>/cmdline, is world-readable. `@`, so make never echoes the recipe.
 run_release_with_devops: ## Gets Credentials from devops-repo and run release command with them
-	$(eval info:= $(shell cat ${DEVOPS_ACCOUNT_DIR}/account_github.env | grep -E '^GITHUB_GH_TOKEN='))
-	@make release $(info)
+	@set -a \
+		&& eval "$$(grep -h -E '^(GITHUB_GH_TOKEN)=' ${DEVOPS_ACCOUNT_DIR}/account_github.env)" \
+		&& set +a \
+		&& $(MAKE) release
 
 spc: ## Checks if the Release Branch and the two Release Tags already exist
 	$(eval filtered_branches:= $(shell git branch --all | grep "release/${ONDEWO_NLU_VERSION}"))
