@@ -59,7 +59,7 @@ ONDEWO_NLU_VERSION=7.4.0
 
 # Submodule pins - `make checkout_defined_submodule_versions` checks these out
 ONDEWO_NLU_API_GIT_BRANCH=tags/7.4.0
-ONDEWO_PROTO_COMPILER_GIT_BRANCH=tags/5.15.7
+ONDEWO_PROTO_COMPILER_GIT_BRANCH=tags/5.16.0
 
 # Set by `make ondewo_release` from ondewo-devops-accounts/account_github.env - never here
 GITHUB_GH_TOKEN?=ENTER_YOUR_TOKEN_HERE
