@@ -36,7 +36,7 @@ import (
 // consumed. Every one of them has to end up in the global descriptor registry when this package
 // is linked; a proto that silently stopped being compiled is otherwise invisible until a
 // consumer misses a type.
-const protoFileCount = 19
+const protoFileCount = 20
 
 // services is every gRPC service this product exposes, keyed by the fully qualified proto name
 // the ServiceDesc must declare.
@@ -48,6 +48,7 @@ var services = map[string]*grpc.ServiceDesc{
 	"ondewo.nlu.EntityTypes":       &nlu.EntityTypes_ServiceDesc,
 	"ondewo.nlu.Intents":           &nlu.Intents_ServiceDesc,
 	"ondewo.nlu.LlmEvaluations":    &nlu.LlmEvaluations_ServiceDesc,
+	"ondewo.nlu.Logs":              &nlu.Logs_ServiceDesc,
 	"ondewo.nlu.Operations":        &nlu.Operations_ServiceDesc,
 	"ondewo.nlu.ProjectRoles":      &nlu.ProjectRoles_ServiceDesc,
 	"ondewo.nlu.ProjectStatistics": &nlu.ProjectStatistics_ServiceDesc,
@@ -71,6 +72,7 @@ var clientConstructors = map[string]func(grpc.ClientConnInterface) any{
 	"ondewo.nlu.EntityTypes":       func(cc grpc.ClientConnInterface) any { return nlu.NewEntityTypesClient(cc) },
 	"ondewo.nlu.Intents":           func(cc grpc.ClientConnInterface) any { return nlu.NewIntentsClient(cc) },
 	"ondewo.nlu.LlmEvaluations":    func(cc grpc.ClientConnInterface) any { return nlu.NewLlmEvaluationsClient(cc) },
+	"ondewo.nlu.Logs":              func(cc grpc.ClientConnInterface) any { return nlu.NewLogsClient(cc) },
 	"ondewo.nlu.Operations":        func(cc grpc.ClientConnInterface) any { return nlu.NewOperationsClient(cc) },
 	"ondewo.nlu.ProjectRoles":      func(cc grpc.ClientConnInterface) any { return nlu.NewProjectRolesClient(cc) },
 	"ondewo.nlu.ProjectStatistics": func(cc grpc.ClientConnInterface) any { return nlu.NewProjectStatisticsClient(cc) },

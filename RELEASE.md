@@ -2,6 +2,15 @@
 
 *****************
 
+## Release ONDEWO NLU Go Client 7.6.0
+
+### Improvements
+
+* Tracking API Version [7.6.0](https://github.com/ondewo/ondewo-nlu-api/releases/tag/7.6.0) ( [Documentation](https://ondewo.github.io/ondewo-nlu-api/) )
+* Generated with ondewo-proto-compiler 5.17.0 (protoc 35.1, `protoc-gen-go` v1.36.12). New runtime floors: `google.golang.org/grpc` v1.85.0, `google.golang.org/protobuf` v1.36.12, genproto v0.0.0-20261116203732-fd2c7689a808 and `go 1.26.0`.
+
+*****************
+
 ## Release ONDEWO NLU Go Client 7.4.0
 
 ### Improvements
