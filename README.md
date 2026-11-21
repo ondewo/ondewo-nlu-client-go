@@ -60,9 +60,9 @@ import nlupb "github.com/ondewo/ondewo-nlu-client-go/v7/api/ondewo/nlu"
 > major version must be compatible`. The suffix moves with the major version of the ONDEWO NLU API,
 > so an `8.x` release will be imported as `/v8`, and a program can depend on both at once.
 
-Releases are tagged twice on the same commit: with the ONDEWO release number (`7.6.0`), which is
+Releases are tagged twice on the same commit: with the ONDEWO release number (`7.6.1`), which is
 what the [GitHub releases page](https://github.com/ondewo/ondewo-nlu-client-go/releases) lists and
-what the rest of the ONDEWO client fleet uses, and with the `v`-prefixed spelling (`v7.6.0`), which
+what the rest of the ONDEWO client fleet uses, and with the `v`-prefixed spelling (`v7.6.1`), which
 is the only tag shape Go tooling recognises as a module version. Use the `v`-prefixed one in
 `go get`, `go.mod` and anywhere else a version is written.
 
@@ -484,7 +484,7 @@ runs in the utils image. `make release` runs, in this order:
 4. **Publication rehearsal** — `publish_dry_run_via_docker` on that commit (see below), the last
    step before anything is pushed.
 5. **Push** — `master`, the release branch and **two** tags for the same commit: the ONDEWO release
-   tag (`7.6.0`) and the `v`-prefixed tag Go tooling requires (`v7.6.0`). The `v` tag *is* the
+   tag (`7.6.1`) and the `v`-prefixed tag Go tooling requires (`v7.6.1`). The `v` tag *is* the
    published module.
 6. **Module proxy** — `publish_go_module_via_docker` asks `proxy.golang.org` for the new version,
    with a short retry. A failure only prints a warning: the module is released once its tag is
@@ -503,7 +503,7 @@ of exactly what git has under that tag, so **the tag *is* the published artifact
 registry account to own, no namespace to claim and no publishing credential to rotate. The whole
 correctness question is therefore about the tag:
 
-* it must be spelled `v<semver>` — `7.6.0` alone is not a Go module version;
+* it must be spelled `v<semver>` — `7.6.1` alone is not a Go module version;
 * the module path in `go.mod` must end in `/vN` matching the tag's major version, and that path is
   baked by `protoc-gen-go` into every generated import, so it cannot be patched after generation —
   `make generate_ondewo_protos` passes it to the compiler image as the third positional argument;
