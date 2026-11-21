@@ -43,7 +43,7 @@ The client is a plain Go module, published to the public module proxy
 is no registry account, no token and no `go install` step in between. Add it to your module with:
 
 ```shell
-go get github.com/ondewo/ondewo-nlu-client-go/v7@latest   ## or @v7.6.0 to pin an exact release
+go get github.com/ondewo/ondewo-nlu-client-go/v7@latest   ## or @v7.6.1 to pin an exact release
 ```
 
 Then import the package of the service you need:
