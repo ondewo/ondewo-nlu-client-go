@@ -4907,7 +4907,9 @@ type ReferencedChunk struct {
 	// For crawled documents the URL of the source document. For any other document it is left empty.
 	DocumentUrl string `protobuf:"bytes,8,opt,name=document_url,json=documentUrl,proto3" json:"document_url,omitempty"`
 	// For crawled documents link to the source document that directly jumps to the chunk's location on the page using a text fragment anchor (a bit fragile and might not always work). For any other document it is left empty.
-	DeepLinkUrl   string `protobuf:"bytes,9,opt,name=deep_link_url,json=deepLinkUrl,proto3" json:"deep_link_url,omitempty"`
+	DeepLinkUrl string `protobuf:"bytes,9,opt,name=deep_link_url,json=deepLinkUrl,proto3" json:"deep_link_url,omitempty"`
+	// Title of the document (optional).
+	DocumentTitle string `protobuf:"bytes,10,opt,name=document_title,json=documentTitle,proto3" json:"document_title,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -5001,6 +5003,13 @@ func (x *ReferencedChunk) GetDocumentUrl() string {
 func (x *ReferencedChunk) GetDeepLinkUrl() string {
 	if x != nil {
 		return x.DeepLinkUrl
+	}
+	return ""
+}
+
+func (x *ReferencedChunk) GetDocumentTitle() string {
+	if x != nil {
+		return x.DocumentTitle
 	}
 	return ""
 }
@@ -13701,7 +13710,7 @@ const file_ondewo_nlu_session_proto_rawDesc = "" +
 	"\x14llm_agent_node_phase\x18\x05 \x01(\x0e2\x1d.ondewo.nlu.LlmAgentNodePhaseR\x11llmAgentNodePhase\x128\n" +
 	"\ttimestamp\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\ttimestamp\x12H\n" +
 	"\"llm_agent_node_event_duration_in_s\x18\a \x01(\x02R\x1cllmAgentNodeEventDurationInS\x12I\n" +
-	"\"llm_agent_node_event_error_message\x18\b \x01(\tR\x1dllmAgentNodeEventErrorMessage\"\xbb\x02\n" +
+	"\"llm_agent_node_event_error_message\x18\b \x01(\tR\x1dllmAgentNodeEventErrorMessage\"\xe2\x02\n" +
 	"\x0fReferencedChunk\x12'\n" +
 	"\x0freference_index\x18\x01 \x01(\x05R\x0ereferenceIndex\x12\x1d\n" +
 	"\n" +
@@ -13715,7 +13724,9 @@ const file_ondewo_nlu_session_proto_rawDesc = "" +
 	"similarity\x18\a \x01(\x02R\n" +
 	"similarity\x12!\n" +
 	"\fdocument_url\x18\b \x01(\tR\vdocumentUrl\x12\"\n" +
-	"\rdeep_link_url\x18\t \x01(\tR\vdeepLinkUrl\"\x81\b\n" +
+	"\rdeep_link_url\x18\t \x01(\tR\vdeepLinkUrl\x12%\n" +
+	"\x0edocument_title\x18\n" +
+	" \x01(\tR\rdocumentTitle\"\x81\b\n" +
 	"\vQueryResult\x12\x1d\n" +
 	"\n" +
 	"query_text\x18\x01 \x01(\tR\tqueryText\x12B\n" +
